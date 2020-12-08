@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>animation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        li {
+            list-style-type: none
+        }
+
+        .container {
+            overflow: hidden;
+            width: 600px;
+            height: 250px;
+            border: 1px solid gainsboro;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        .img {
+            width: 5000px;
+            position: absolute;
+            left: -600px;
+        }
+
+        .img li {
+            width: 600px;
+            float: left;
+        }
+
+        .arrow_l, .arrow_r {
+            width: 20px;
+            height: 25px;
+            background-size: 20px 25px;
+            background-repeat: no-repeat;
+            cursor: pointer;
+            z-index: 900;
+            opacity: 0.7;
+        }
+
+        .container .arrow_r {
+            background-image: url("Arrow right 1.png");
+            position: absolute;
+            right: 0;
+            top: 125px;
+        }
+
+        .container .arrow_l {
+            background-image: url("Arrow left 1.png");
+            position: absolute;
+            left: 0;
+            top: 125px;
+        }
+
+
+        .dot {
+            height: 20px;
+            width: 150px;
+            position: absolute;
+            left: 225px;
+            bottom: 10px;
+            z-index: 999;
+        }
+
+        .dot li {
+            height: 20px;
+            width: 20px;
+            float: left;
+            cursor: pointer;
+            background-image: url("dot-circle.png");
+            background-color: transparent;
+            background-size: contain;
+            margin-left: 10px;
+            opacity: 0.8;
+            transition: all 1S;
+        }
+
+
+        .dot .select {
+            background-image: url("dota.png");
+            background-size: contain;
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <ul class="img">
+        <li><img src="img/rails.jpg" alt=""></li>
+
+        <li><img src="img/css.jpg" alt=""></li>
+        <li><img src="img/js.jpg" alt=""></li>
+        <li><img src="img/h5.jpg" alt=""></li>
+        <li><img src="img/php.jpg" alt=""></li>
+        <li><img src="img/rails.jpg" alt=""></li>
+
+        <li><img src="img/css.jpg" alt=""></li>
+    </ul>
+    <div class="arrow_l"></div>
+    <div class="arrow_r"></div>
+    <ul class="dot">
+        <li class="x select"></li>
+        <li class="x"></li>
+        <li class="x"></li>
+        <li class="x"></li>
+        <li class="x"></li>
+    </ul>
+</div>
+
+<script>
+    window.onload = function () {
+
+        //封装简易$
+        function $(node) {
+            switch (node.charAt(0)) {
+                case ".":
+                    return document.getElementsByClassName(node.slice(1));
+                    break;
+                case "#":
+                    return document.getElementById(node.slice(1));
+                    break;
+                default:
+                    return document.getElementsByTagName(node);
+                    break;
+            }
+        }
+
+        var index = 1;//全局变量
+        var running = false;
+        var target;
+
+        //左右图标点击事件
+        $(".arrow_r")[0].onclick = function () {
+            if (!running){
+                if (index == 5) {
+                    index = 0;
+                    $("ul")[0].style.left = "0"
+                }
+                index++;
+                console.log(index)
+                dot(index);
+                animate($("ul")[0], target)
+            }
+        }
+        //绑定左点击事件
+
+            $(".arrow_l")[0].onclick = function () {
+                    if (!running) {
+                        if (index == 1) {
+                            index = 6;
+                            $("ul")[0].style.left = "-3600px";
+                        }
+                        index--;
+                        console.log(index)
+                        dot(index);
+                        animate($("ul")[0], target)
+                    }
+            }
+
+        //封装定时轮播函数
+        function play(){
+            if (!running) {
+                if (index == 5) {
+                    index = 0;
+                    $("ul")[0].style.left = "0"
+                }
+                index++;
+                console.log(index)
+                dot(index);
+                animate($("ul")[0], target)
+            }
+        }
+
+        //执行定时器
+        var play_=setInterval(play,2000);
+        for(i=1 ; i< 6 ; i++){
+            $("li")[i].onmouseenter=function () {
+                clearInterval(play_);
+            }
+            $("li")[i].onmouseleave=function () {
+                play_=setInterval(play,2000);
+            }
+        }
+
+
+
+        //点点图动
+        for (i = 0; i < $(".x").length; i++) {
+            $(".x")[i].tabIndex = i;
+            $(".x")[i].onclick = function () {
+                if(running == false){
+                    if (index == 1 && this.tabIndex == 4) {
+                        $("ul")[0].style.left = "-3600px"
+                        index = 5
+                        dot(index);
+                        animate($("ul")[0], target)
+                    } else if (index == 5 && this.tabIndex == 0) {
+                        $("ul")[0].style.left = "0"
+                        index = 1
+                        dot(index);
+                        animate($("ul")[0], target)
+                    } else {
+                        index = this.tabIndex + 1
+                        console.log(index);
+                        dot(index);
+                        animate($("ul")[0], target)
+                    }
+                }
+            }
+        }
+
+
+        //点浮标点动
+        function dot(index) {
+            switch (index) {
+                case 5:
+                    for (j = 0; j < $(".x").length; j++) {
+                        $(".x")[j].className = "x"
+                    }
+                    $("li")[index + 6].classList.add("select");
+                    break
+                case 1:
+                    for (j = 0; j < $(".x").length; j++) {
+                        $(".x")[j].className = "x"
+                    }
+                    $("li")[index + 6].classList.add("select");
+                    break
+                case 2:
+                    for (j = 0; j < $(".x").length; j++) {
+                        $(".x")[j].className = "x"
+                    }
+                    $("li")[index + 6].classList.add("select");
+                    break
+                case 3:
+                    for (j = 0; j < $(".x").length; j++) {
+                        $(".x")[j].className = "x"
+                    }
+                    $("li")[index + 6].classList.add("select");
+                    break
+                default:
+                    for (j = 0; j < $(".x").length; j++) {
+                        $(".x")[j].className = "x"
+                    }
+                    $("li")[index + 6].classList.add("select");
+                    break
+            }
+        }
+
+
+        //缓动动画函数
+        function animate(ul, target) {
+            running = true;
+            var target = -600*index;
+            var clock = setInterval(function () {
+                var step = (target - ul.offsetLeft) / 18;
+                console.log(step);
+                step = step > 0 ? Math.ceil(step) : Math.floor(step);
+                if (ul.offsetLeft == target) {
+                    clearInterval(clock);
+                    running = false;
+                } else {
+                    ul.style.left = step + ul.offsetLeft + "px"
+                }
+            }, 15)
+        }
+
+
+    }
+</script>
+</body>
+</html>
